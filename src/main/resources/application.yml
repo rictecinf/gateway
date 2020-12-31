@@ -1,0 +1,84 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: zull-gateway
+
+server:
+  port: 30002
+
+zuul:
+  ignoredServices: "*"
+  prefix: /api
+  stripPrefix: true
+  routes:
+    sample:
+      path: /products
+      #url: http://localhost:8080/products
+      sensitiveHeaders: Cookie,Set-Cookie,Authorization
+      serviceId: api
+      roles: user,master
+    logout:
+      path: /logout
+      url: http://nowhere
+      roles: user,master
+    open:
+      path: /open/**
+      url: http://localhost:8087/open
+
+keycloak:
+  # turn off keycloak spring boot auto-configuration:
+  # We only want to use Spring Security without servlet container specific infrastructure
+  # This allows us to pull the Keycloak configuration from here instead of keycloak.json
+  enabled: false
+
+#  realm: bootadmin
+#  auth-server-url: http://localhost:8180/auth
+#  # The client_id
+#  resource: app-todo
+#  credentials:
+#    # The client_secret
+#    secret: 2cc653a3-24cc-4241-896d-813a726f9b33
+#  ssl-required: external
+#  autodetect-bearer-only: true
+#  # Configures what principal.getName() will return
+#  principal-attribute: preferred_username
+#  use-resource-role-mappings: true
+#  token-minimum-time-to-live: 30
+
+  #auth-server-url: https://keycloak-poc.herokuapp.com/auth
+  auth-server-url: http://localhost:8180/auth
+  public-client: true
+  realm: spring-boot-quickstart
+  resource: app-authz-rest-springboot
+ # ssl-required: none
+ # autodetect-bearer-only: true
+  #  # Configures what principal.getName() will return
+#  principal-attribute: preferred_username
+#  use-resource-role-mappings: true
+#  token-minimum-time-to-live: 30
+
+#  credentials:
+#    secret: '123456'
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  ribbon:
+    eureka:
+      enabled: true
+
+
+
+logging:
+  level:
+    root: DEBUG
+    org.springframework.web: DEBUG
+    com.netflix.zuul: DEBUG
